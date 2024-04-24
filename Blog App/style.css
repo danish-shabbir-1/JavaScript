@@ -1,0 +1,175 @@
+body {
+    background-color: rgb(24, 23, 23);
+    color: white;
+    margin: 0%;
+    padding: 0%;
+}
+
+.Signup-container {
+    border: 1px solid rgb(87, 83, 83);
+    display: block;
+    height: auto;
+    padding: 15px 15px;
+    border-radius: 8px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 19%;
+    text-align: center;
+    margin-top: 10%;
+}
+
+.Signup-container input {
+    display: block;
+    margin: 15px auto;
+    border-color: rgb(87, 83, 83);
+    background: transparent;
+    border: 1px solid;
+    padding: 15px 10px;
+    color: rgb(148, 148, 148);
+    border-radius: 5px;
+    width: 280px;
+    height: 8px;
+}
+
+.Signup-container button {
+    display: block;
+    margin: 15px auto;
+    border-color: rgb(53, 40, 165);
+    background: transparent;
+    border: 1px solid;
+    color: rgb(219, 215, 215);
+    border-radius: 5px;
+    width: 280px;
+    height: auto;
+    padding: 8px 10px;
+    background-color: rgb(49, 37, 153);
+    cursor: pointer;
+}
+
+.Signup-container p {
+    cursor: pointer;
+}
+
+/* #login-page{
+    display: none;
+}
+
+#Signup-Page{
+    display: none;
+} */
+
+.hearder {
+    height: 80px;
+    width: 100%;
+    background-color: rgb(65, 65, 194);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.hearder h1 {
+margin: auto 0px auto 20px;
+}
+.hearder button {
+margin: auto 20px auto 0px;
+display: block;
+border: none;
+background: transparent;
+color: rgb(255, 255, 255);
+border-radius: 5px;
+height: auto;
+padding: 10px 30px;
+background-color: rgb(49, 37, 153);
+cursor: pointer;
+letter-spacing: 2px;
+/* margin-top: 20px; */
+}
+
+.body-dash{
+    margin: 100px 0px 0px 50px;
+}
+
+.body-dash input{
+    display: block;
+    border-color: rgb(87, 83, 83);
+    background: transparent;
+    border: 1px solid;
+    padding: 15px 10px;
+    color: rgb(148, 148, 148);
+    border-radius: 5px;
+    width: 1000px;
+    height: 20px;
+    margin-bottom: 20px;
+}
+
+.body-dash textarea{
+    display: block;
+    border-color: rgb(87, 83, 83);
+    background: transparent;
+    border: 1px solid;
+    padding: 15px 10px;
+    color: rgb(148, 148, 148);
+    border-radius: 5px;
+    width: 1000px;
+    height: 200px;
+}
+
+.body-dash button{
+    display: block;
+    border: none;
+    background: transparent;
+    color: rgb(255, 255, 255);
+    border-radius: 5px;
+    height: auto;
+    padding: 10px 30px;
+    background-color: rgb(49, 37, 153);
+    cursor: pointer;
+    letter-spacing: 2px;
+    margin-top: 20px;
+}
+
+#Blog-post{
+    margin: 0px 0px 0px 50px;
+}
+
+.oneBlog{
+    width: 1000px;
+    height: auto;
+    background-color: rgb(45, 45, 45);
+    color: rgb(156, 156, 156);
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    padding: 10px 10px;
+    border: 1px solid rgb(24, 24, 214);
+    margin: 20px 0px;
+    border-radius: 10px;
+    border-top-right-radius: 0px;
+}
+
+#DeleteBtn{
+    /* display: block; */
+    border: none;
+    background: transparent;
+    color: rgb(255, 255, 255);
+    border-radius: 5px;
+    height: auto;
+    padding: 10px 30px;
+    background-color: rgb(49, 37, 153);
+    cursor: pointer;
+    letter-spacing: 2px;
+    margin-top: 20px;
+}
+
+#updateBtn{
+     /* display: block; */
+     border: none;
+     background: transparent;
+     color: rgb(255, 255, 255);
+     border-radius: 5px;
+     height: auto;
+     padding: 10px 30px;
+     background-color: rgb(49, 37, 153);
+     cursor: pointer;
+     letter-spacing: 2px;
+     margin-top: 20px;
+       margin-left: 10px;
+}
