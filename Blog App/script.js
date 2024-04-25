@@ -13,6 +13,7 @@ import {
   getDocs,
   doc,
   deleteDoc,
+  setDoc 
 } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
 let firstName = document.getElementById("FirstName");
@@ -30,6 +31,8 @@ let BlogPost = document.getElementById("Blog-post");
 let DelBtn = document.getElementById("DeleteBtn");
 let logoutBtn = document.getElementById("logoutBtn");
 
+let userId = ""
+
 const firebaseConfig = {
   apiKey: "AIzaSyAh7yD-UU6XQrLBtIEzkMSCE9AnCoD2drk",
   authDomain: "new-blog-app-1d4de.firebaseapp.com",
@@ -44,30 +47,17 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth();
 const db = getFirestore(app);
 
-// onAuthStateChanged((user) => {
-//     if (user) {
-//         // If the user is authenticated and not already on the dashboard page
-
-//     } else {
-//         // If the user is not authenticated and not already on the login page
-//         if (window.location.pathname !== "/login.html") {
-//             window.location.href = "login.html";
-//         }
-//     }
-// });
-
 onAuthStateChanged(auth, (user) => {
   if (user) {
-    const uid = user.uid;
-    if (window.location.pathname !== "/Dashboard.html") {
-      window.location.href = "Dashboard.html";
-    }
-  } else {
-    if (window.location.pathname !== "/login.html") {
-      window.location.href = "login.html";
-    }
+    userId = user.uid;
+    console.log(user);
+    // if (window.location.pathname !== "/Dashboard.html") {
+    //   window.location.href = "Dashboard.html";
+    // } 
   }
 });
+
+console.log(userId);
 
 logoutBtn?.addEventListener("click", () => {
   signOut(auth)
@@ -91,6 +81,7 @@ SignUpBtn?.addEventListener("click", async () => {
       firstName: firstName.value,
       LastName: LastName.value,
       Email: email.value,
+      UserUId : userId
     });
     alert("User signed up successfully!");
     window.location.href = "login.html";
@@ -121,11 +112,15 @@ loginButton?.addEventListener("click", (e) => {
 
 BlogPublishBtn?.addEventListener("click", async (e) => {
   e.preventDefault();
-  const docRef = await addDoc(collection(db, "Blogs"), {
-    Title: BlogTitle.value,
-    BlogDetail: BlogDetail.value,
-  });
-  console.log("Document written with ID: ", docRef.id);
+ const ref = await setDoc(doc(db, "Blogs", userId), {
+  Title: BlogTitle.value,
+  BlogDetail: BlogDetail.value,
+ });
+  // const docRef = await addDoc(collection(db, "Blogs"), {
+  //   Title: BlogTitle.value,
+  //   BlogDetail: BlogDetail.value,
+  // });
+  console.log("Document written with ID: ", ref?.id);
 });
 
 let delBtn;
@@ -165,11 +160,13 @@ async function GetAllData() {
 // // Attach event listener to the delete button
 delBtn?.addEventListener("click", async (e) => {
   try {
-    await deleteDoc(doc(db, "Blogs", doc.id)); // Delete the blog post from Firestore using its ID
+    const docId = e.target.parentElement.getAttribute("data-id");
+    await deleteDoc(doc(db, `users/${userId}/Blogs`, docId));
     alert("Blog deleted successfully!");
   } catch (error) {
     console.error("Error deleting blog:", error);
   }
 });
+
 
 GetAllData();
