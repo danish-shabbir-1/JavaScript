@@ -13,7 +13,10 @@ import {
   getDocs,
   doc,
   deleteDoc,
-  setDoc 
+  setDoc,
+  getDoc,
+  updateDoc,
+  onSnapshot
 } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
 let firstName = document.getElementById("FirstName");
@@ -30,8 +33,9 @@ let BlogPublishBtn = document.getElementById("blog-publish");
 let BlogPost = document.getElementById("Blog-post");
 let DelBtn = document.getElementById("DeleteBtn");
 let logoutBtn = document.getElementById("logoutBtn");
+let blogUpdate = document.getElementById("blog-update");
 
-let userId = ""
+let userId = "";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAh7yD-UU6XQrLBtIEzkMSCE9AnCoD2drk",
@@ -49,11 +53,12 @@ const db = getFirestore(app);
 
 onAuthStateChanged(auth, (user) => {
   if (user) {
-    userId = user.uid;
-    console.log(user);
-    // if (window.location.pathname !== "/Dashboard.html") {
-    //   window.location.href = "Dashboard.html";
-    // } 
+    if (!window.location.href.includes("dashboard")) {
+      window.location.href = "dashboard.html";
+      window.location = "dashboard.html";
+    } else {
+      window.location.href = "login.html";
+    }
   }
 });
 
@@ -77,11 +82,11 @@ SignUpBtn?.addEventListener("click", async () => {
       password.value
     );
     const user = userCredential.user;
-    const docRef = await addDoc(collection(db, "userAuthenticationData"), {
+    const docRef = await setDoc(doc(db, "userAuthenticationData", userId), {
       firstName: firstName.value,
       LastName: LastName.value,
       Email: email.value,
-      UserUId : userId
+      UserUId: userId,
     });
     alert("User signed up successfully!");
     window.location.href = "login.html";
@@ -109,64 +114,159 @@ loginButton?.addEventListener("click", (e) => {
       alert(errorMessage); // Display error message to the user
     });
 });
+let doco = doc;
+let newId;
 
 BlogPublishBtn?.addEventListener("click", async (e) => {
   e.preventDefault();
- const ref = await setDoc(doc(db, "Blogs", userId), {
-  Title: BlogTitle.value,
-  BlogDetail: BlogDetail.value,
- });
-  // const docRef = await addDoc(collection(db, "Blogs"), {
-  //   Title: BlogTitle.value,
-  //   BlogDetail: BlogDetail.value,
-  // });
-  console.log("Document written with ID: ", ref?.id);
+  const docRef = await addDoc(collection(db, "Blogs"), {
+    Title: BlogTitle.value,
+    BlogDetail: BlogDetail.value,
+  });
+  BlogTitle.value = "";
+  BlogDetail.value = "";
+  newId = docRef.id;
+  console.log("Document written with ID: ", newId);
+  // Call GetSingalDoc with the newId to display the newly added document
+  GetSingalDoc(newId);
 });
 
-let delBtn;
-let DoocId;
+async function GetSingalDoc(docId) {
+  const docRef = doc(db, "Blogs", docId);
+  const docSnap = await getDoc(docRef);
+
+  if (docSnap.exists()) {
+    const data = docSnap.data();
+    // Create elements to display the document data
+    const div = document.createElement("div");
+    div.className = "oneBlog";
+    const heading = document.createElement("h3");
+    heading.textContent = data.Title;
+    const text = document.createElement("p");
+    text.textContent = data.BlogDetail;
+    const delBtn = document.createElement("button");
+    delBtn.innerHTML = "Delete";
+    delBtn.id = "deleteBtn";
+    const updateBtn = document.createElement("button");
+    updateBtn.innerHTML = "Update";
+    updateBtn.id = "updateBtn";
+
+    div.appendChild(heading);
+    div.appendChild(text);
+    div.appendChild(delBtn);
+    div.appendChild(updateBtn);
+
+    BlogPost.appendChild(div);
+  } else {
+    console.log("No such document!");
+  }
+}
+
+// async function UpdateData(docId) {
+//   const washingtonRef = doc(db, "Blogs", docId);
+
+//   // Set the "capital" field of the city 'DC'
+//   await updateDoc({
+//     BlogTitle: BlogTitle.value,
+//     BlogDetail: BlogTitle.value,
+//   });
+// }
+
+// Call GetAllData to display all existing documents
 async function GetAllData() {
   const querySnapshot = await getDocs(collection(db, "Blogs"));
   querySnapshot.forEach((doc) => {
-    const data = doc.data(); // Get the data of the document
+    const data = doc.data();
     console.log(doc.data());
-    const div = document.createElement("div"); // Create a new div element
+    const div = document.createElement("div");
     div.className = "oneBlog";
-    const heading = document.createElement("h3"); // Create a new h3 element for the title
-    const text = document.createElement("p"); // Create a new p element for the blog detail
-    delBtn = document.createElement("button");
+    const heading = document.createElement("h3");
+    const text = document.createElement("p");
+    const delBtn = document.createElement("button");
     delBtn.innerHTML = "Delete";
-    delBtn.id = "DeleteBtn";
+    delBtn.id = "deleteBtn";
     const updateBtn = document.createElement("button");
-    updateBtn.innerHTML = "Delete";
+    updateBtn.innerHTML = "Update";
     updateBtn.id = "updateBtn";
-    DoocId = doc.id; // Set the data-id attribute to the document ID
+    let docId = doc.id;
 
-    // Check if the document has Title and BlogDetail fields
     if (data.Title && data.BlogDetail) {
-      heading.textContent = data.Title; // Set the title text content
-      text.textContent = data.BlogDetail; // Set the blog detail text content
+      heading.textContent = data.Title;
+      text.textContent = data.BlogDetail;
 
-      div?.appendChild(heading); // Append the title to the div
-      div?.appendChild(text); // Append the blog detail to the div
-      div?.appendChild(delBtn); // Append the delete button to the div
-      div?.appendChild(updateBtn); // Append the delete button to the div
+      div.appendChild(heading);
+      div.appendChild(text);
+      div.appendChild(delBtn);
+      div.appendChild(updateBtn);
 
-      BlogPost?.appendChild(div); // Append the div to the BlogPost container in the DOM
+      BlogPost.appendChild(div);
+
+      delBtn.addEventListener("click", async () => {
+        try {
+          await deleteDoc(doco(db, "Blogs", docId));
+          alert("Blog deleted successfully!");
+          div.remove();
+        } catch (error) {
+          console.error("Error deleting blog:", error);
+        }
+      });
+
+      updateBtn.addEventListener("click", async () => {
+        const docRef = doco(db, "Blogs", docId);
+    
+        try {
+            // Retrieve the current document data
+            const docSnapshot = await getDoc(docRef);
+            const docData = docSnapshot.data();
+    
+            // Populate the input fields with the current values
+            BlogTitle.value = docData.Title;
+            BlogDetail.value = docData.BlogDetail;
+    
+            alert("Fields updated with current values!");
+    
+            // Add real-time listener for the document
+            const unsubscribe = onSnapshot(docRef, (doc) => {
+                const updatedDocData = doc.data();
+    
+                // Update the input fields with the updated values
+                BlogTitle.value = updatedDocData.Title;
+                BlogDetail.value = updatedDocData.BlogDetail;
+    
+                alert("Blog updated in real time!");
+            });
+    
+            // Add event listener for updating the document
+            blogUpdate.addEventListener("click", async (e) => {
+                e.preventDefault();
+    
+                try {
+                    // Update the document with new values
+                    await updateDoc(docRef, {
+                        Title: BlogTitle.value,
+                        BlogDetail: BlogDetail.value,
+                    });
+    
+                    alert("Blog updated successfully!");
+                } catch (error) {
+                    console.error("Error updating blog:", error);
+                }
+            });
+    
+            // Unsubscribe from the real-time listener when not needed
+            // For example, when the user navigates away from the page
+            // unsubscribe();
+        } catch (error) {
+            console.error("Error updating fields:", error);
+        }
+    });
+    
+    
+    
+    
+    
     }
   });
 }
-
-// // Attach event listener to the delete button
-delBtn?.addEventListener("click", async (e) => {
-  try {
-    const docId = e.target.parentElement.getAttribute("data-id");
-    await deleteDoc(doc(db, `users/${userId}/Blogs`, docId));
-    alert("Blog deleted successfully!");
-  } catch (error) {
-    console.error("Error deleting blog:", error);
-  }
-});
-
 
 GetAllData();
