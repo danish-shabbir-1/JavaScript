@@ -53,12 +53,12 @@ const db = getFirestore(app);
 
 onAuthStateChanged(auth, (user) => {
   if (user) {
-    if (!window.location.href.includes("dashboard")) {
-      window.location.href = "dashboard.html";
-      window.location = "dashboard.html";
-    } else {
-      window.location.href = "login.html";
-    }
+    // if (!window.location.href.includes("dashboard")) {
+    //   window.location.href = "dashboard.html";
+    //   window.location = "dashboard.html";
+    // } else {
+    //   window.location.href = "login.html";
+    // }
   }
 });
 
